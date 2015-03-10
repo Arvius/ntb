@@ -2,6 +2,7 @@
   "name": "Joshua",
   "status": "Node Tox Bot",
   "toxSave": "./save.tox",
+  "cmdFile": "./lib/cmds.js",
   "nodes": [
     {
       "maintainer": "Impyy",
@@ -24,6 +25,10 @@
     {
       "name": "Mense",
       "key": "e659cfd48e156afc92340a25d8a71ad59faf3d3761a4a90ff0d13d05ae949d14"
+    },
+    {
+      "name": "Taiterio",
+      "key": "d52fd59b5846c4d43d15758da54c7a4eed7f7ca0a1eb8781d82b0cdb62ead26f"
     }
   ]
 }
