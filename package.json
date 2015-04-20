@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/Arvius/ntb",
   "dependencies": {
-   "toxcore":              "git://github.com/Arvius/node-toxcore.git"
+    "toxcore":              "git://github.com/saneki/node-toxcore.git"
   }
 }
