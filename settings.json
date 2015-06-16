@@ -2,7 +2,6 @@
   "name": "Joshua",
   "status": "Node Tox Bot",
   "toxSave": "./save.tox",
-  "cmdFile": "./lib/cmds.js",
   "nodes": [
     {
       "maintainer": "Impyy",

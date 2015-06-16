@@ -2,7 +2,7 @@
   "name": "ntb",
   "version": "0.0.1",
   "description": "Node tox bot",
-  "main": "./main.js",
+  "main": "./run.js",
   "directories": {
     "lib": "./lib"
   },
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Arvius/ntb.git"
+    "url": "https://github.com/EEnginE/ntb.git"
   },
   "keywords": [
     "tox",
@@ -21,10 +21,11 @@
   "author": "Silas Bartel",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Arvius/ntb/issues"
+    "url": "https://github.com/EEnginE/ntb/issues"
   },
-  "homepage": "https://github.com/Arvius/ntb",
+  "homepage": "https://github.com/EEnginE/ntb",
   "dependencies": {
-    "toxcore":              "git://github.com/saneki/node-toxcore.git"
+    "toxcore": "git://github.com/saneki/node-toxcore.git",
+    "coffee-script": "*"
   }
 }
