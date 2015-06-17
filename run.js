@@ -25,5 +25,5 @@ bot.on('error', function(err) {
 });
 
 process.on( 'SIGINT', function() {
-  bot.kill();
+  bot.kill( 'SIGTERM' );
 });
