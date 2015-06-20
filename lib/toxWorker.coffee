@@ -1,8 +1,6 @@
 toxcore = require 'toxcore'
 fs      = require 'fs'
 
-SEND_MSG_CMD_TYPE = 42
-
 module.exports =
 class ToxWorker
   constructor: (params) ->
@@ -20,13 +18,21 @@ class ToxWorker
     @tox.setStatusSync 0 # TODO: use cons
 
     # Register event handler
-    @tox.on 'friendRequest', (evt) => @handleFriendRequest evt
-    @tox.on 'friendMessage', (evt) => @handleFriendMessage evt
+    @tox.on 'friendRequest',          (evt) => @handleFriendRequest          evt
+    @tox.on 'friendMessage',          (evt) => @handleFriendMessage          evt
+    @tox.on 'friendConnectionStatus', (evt) => @handleFriendConnectionStatus evt
+
+    @deleteAllFriends()
 
     @tox.bootstrapSync i.address, i.port, i.key for i in @nodes
 
     console.log "TOX id: #{@tox.getAddressHexSync()}"
     @tox.start()
+
+  deleteAllFriends: -> # TODO renmove this when ID's wont change anymore
+    for i in @tox.getFriendListSync()
+      @tox.deleteFriendSync i
+      console.log "Deleted Friend #{i}"
 
   setNameAndStatus: (name, status) ->
     @tox.setNameSync          name
@@ -43,20 +49,29 @@ class ToxWorker
     console.log "Accepted friend request from #{evt.publicKeyHex()}"
 
   handleFriendMessage: (evt) ->
-    return unless evt.type() is SEND_MSG_CMD_TYPE
-    if not friends[evt.friend()]?
+    return unless evt.messageType() is toxcore.Consts.TOX_MESSAGE_TYPE_ACTION
+    if not @ntb.friends[evt.friend()]?
       console.log "Fatal error: Friend #{evt.friend()} not found"
       console.log "  MSG: #{evt.message()}"
       return
-    friends[evt.friend()].pReceivedCommand evt.message()
+    @ntb.friends[evt.friend()].pReceivedCommand evt.message()
+
+  handleFriendConnectionStatus: (evt) ->
+    unless evt.connectionStatus() is toxcore.Consts.TOX_CONNECTION_NONE
+      console.log "#{evt.friend()} is now Online"
+      if @ntb.friends[evt.friend()]?
+        @ntb.friends[evt.friend()].online()
+      else
+        console.log "Friend #{evt.friend()} is Undefined!"
 
   sendCMD: (fID, msg) ->
     try
-      return @TOX.sendFriendMessageSync fID, msg, SEND_MSG_CMD_TYPE
+      return @tox.sendFriendMessageSync fID, "#{msg}", toxcore.Consts.TOX_MESSAGE_TYPE_ACTION
     catch e
       console.log "ERROR: Failed to send message"
       console.log "  Friend ID: #{fID}"
       console.log "  Message:   #{msg}"
+      console.log e
       return -1
 
   getSave: (file) ->

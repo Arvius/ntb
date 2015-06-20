@@ -20,6 +20,7 @@ class NTB
       "status":   @settings.status
       "saveFile": @settings.toxSave
       "nodes":    @settings.nodes
+      "firends":  @friends
     }
 
     process.on 'SIGINT',  => @shutdown()

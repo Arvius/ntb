@@ -4,4 +4,10 @@ module.exports =
 class Bot extends ToxFriendProtBase
   constructor: (params) ->
     @ntb = params.ntb
-    @pInitBotProtocol params
+    @firstOnline = true
+    @params = params
+
+  online: ->
+    return unless @firstOnline
+    @pInitBotProtocol @params
+    @firstOnline = false
