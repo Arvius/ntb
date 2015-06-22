@@ -21,6 +21,7 @@ class ToxWorker
     @tox.on 'friendRequest',          (evt) => @handleFriendRequest          evt
     @tox.on 'friendMessage',          (evt) => @handleFriendMessage          evt
     @tox.on 'friendConnectionStatus', (evt) => @handleFriendConnectionStatus evt
+    @tox.on 'selfConnectionStatus',   (evt) => @handleSelfConnectionStatus   evt
 
     @deleteAllFriends()
 
@@ -63,6 +64,14 @@ class ToxWorker
         @ntb.friends[evt.friend()].online()
       else
         console.log "Friend #{evt.friend()} is Undefined!"
+      return
+    console.log "#{evt.friend()} is now ofline"
+
+  handleSelfConnectionStatus: (evt) ->
+    if evt.isConnected()
+      console.log "Connected"
+    else
+      console.log "Disconnected"
 
   sendCMD: (fID, msg) ->
     try
