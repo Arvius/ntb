@@ -1,6 +1,8 @@
 toxcore = require 'toxcore'
 fs      = require 'fs'
 
+BigMessage = require './botProtocol/prot-bigMessage'
+
 module.exports =
 class ToxWorker
   constructor: (params) ->
@@ -9,6 +11,7 @@ class ToxWorker
     @name     = params.name
     @status   = params.status
     @nodes    = params.nodes
+    @consts   = toxcore.Consts
 
   startup: ->
     toxOpts = {'data': @getSave @saveFile } if fs.existsSync @saveFile
@@ -50,15 +53,16 @@ class ToxWorker
     console.log "Accepted friend request from #{evt.publicKeyHex()}"
 
   handleFriendMessage: (evt) ->
-    return unless evt.messageType() is toxcore.Consts.TOX_MESSAGE_TYPE_ACTION
+    return unless evt.messageType() is @consts.TOX_MESSAGE_TYPE_ACTION
     if not @ntb.friends[evt.friend()]?
       console.log "Fatal error: Friend #{evt.friend()} not found"
       console.log "  MSG: #{evt.message()}"
       return
-    @ntb.friends[evt.friend()].pReceivedCommand evt.message()
+    BigMessage.receive evt.message(), (msg) =>
+      @ntb.friends[evt.friend()].pReceivedCommand evt.message()
 
   handleFriendConnectionStatus: (evt) ->
-    unless evt.connectionStatus() is toxcore.Consts.TOX_CONNECTION_NONE
+    unless evt.connectionStatus() is @consts.TOX_CONNECTION_NONE
       console.log "#{evt.friend()} is now Online"
       if @ntb.friends[evt.friend()]?
         @ntb.friends[evt.friend()].online()
@@ -75,7 +79,8 @@ class ToxWorker
 
   sendCMD: (fID, msg) ->
     try
-      return @tox.sendFriendMessageSync fID, "#{msg}", toxcore.Consts.TOX_MESSAGE_TYPE_ACTION
+      return BigMessage.send msg, @consts.TOX_MAX_MESSAGE_LENGTH, (m) =>
+        @tox.sendFriendMessageSync fID, m, @consts.TOX_MESSAGE_TYPE_ACTION
     catch e
       console.log "ERROR: Failed to send message"
       console.log "  Friend ID: #{fID}"

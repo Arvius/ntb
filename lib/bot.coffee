@@ -11,3 +11,6 @@ class Bot extends ToxFriendProtBase
     return unless @firstOnline
     @pInitBotProtocol @params
     @firstOnline = false
+
+  REQ_collabList: -> "drop"
+  REQ_joinCollab: -> "drop"
